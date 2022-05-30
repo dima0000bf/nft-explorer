@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { AccountPage } from 'pages/AccountPage'
+import { RootPage } from 'pages/RootPage'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { ACCOUNT_ROUTES } from 'routing/account'
+import { ROOT_ROUTES } from 'routing/root'
 
-function App() {
+export function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <div>
+      <div>example collection</div>
+      <div>0:0cd35b77b73df2ce86288cb8530cb6328363543f04da81687e43b3d5628c0bda</div>
 
-export default App;
+      <div>example nft</div>
+      <div>0:b20b38f46a839726f1dbf07deee0ee5d1b9eec86eeacede818157f6af14feef0</div>
+
+      <BrowserRouter>
+        <Routes>
+          <Route path={ROOT_ROUTES.rootPage.route} element={<RootPage />} />
+          <Route
+            path={ACCOUNT_ROUTES.accountPage.route}
+            element={
+              <>
+                <RootPage />
+                <AccountPage />
+              </>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  )
+}
