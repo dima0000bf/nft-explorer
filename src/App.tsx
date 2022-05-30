@@ -1,8 +1,8 @@
-import { AccountPage } from 'pages/AccountPage'
-import { RootPage } from 'pages/RootPage'
+import { AccountPage } from '@/pages/AccountPage'
+import { RootPage } from '@/pages/RootPage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { ACCOUNT_ROUTES } from 'routing/account'
-import { ROOT_ROUTES } from 'routing/root'
+import { ACCOUNT_ROUTES } from '@/routing/account'
+import { ROOT_ROUTES } from '@/routing/root'
 
 export function App() {
   return (

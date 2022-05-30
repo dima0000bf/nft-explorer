@@ -1,4 +1,4 @@
-import { userRpcClient } from 'hooks/useRpsClient'
+import { userRpcClient } from '@/hooks/useRpsClient'
 import { WalletStore } from './WalletStore'
 
 const rpc = userRpcClient()

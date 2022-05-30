@@ -1,20 +1,22 @@
-import { COLLECTION_ABI } from 'abis/Collection.abi'
-import { INDEX_ABI } from 'abis/Index.abi'
-import { INDEX_BASIS_ABI } from 'abis/IndexBasis.abi'
-import { Input } from 'component/Input'
+import { COLLECTION_ABI } from '@/abis/Collection.abi'
+import { INDEX_ABI } from '@/abis/Index.abi'
+import { INDEX_BASIS_ABI } from '@/abis/IndexBasis.abi'
+import { Input } from '@/component/Input'
 import { Address } from 'everscale-inpage-provider'
-import { useFindSupportedInterface } from 'hooks/useFindSupportedInterface'
-import { userRpcClient } from 'hooks/useRpsClient'
+import { useFindSupportedInterface } from '@/hooks/useFindSupportedInterface'
+import { userRpcClient } from '@/hooks/useRpsClient'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { ACCOUNT_ROUTES } from 'routing/account'
-import { ROOT_ROUTES } from 'routing/root'
-import { nftAbiService } from 'services/NftAbiService'
-import { useStores } from 'stores'
-import { UnpromiseFunc } from 'util/promise'
+import { ACCOUNT_ROUTES } from '@/routing/account'
+import { ROOT_ROUTES } from '@/routing/root'
+import { nftAbiService } from '@/services/NftAbiService'
+import { useStores } from '@/stores'
+import { UnpromiseFunc } from '@/util/promise'
 
 const BASIC_NFT_TYPE = 'Basic NFT'
+
+console.log(COLLECTION_ABI)
 
 export const AccountPage = observer(() => {
   const { walletStore } = useStores()

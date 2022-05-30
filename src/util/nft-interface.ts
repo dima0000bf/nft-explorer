@@ -1,4 +1,4 @@
-import { nftAbiService } from 'services/NftAbiService'
+import { nftAbiService } from '@/services/NftAbiService'
 import { UnpromiseFunc } from './promise'
 
 type TIPStandard = 4.1 | 4.2 | 4.3

@@ -1,6 +1,6 @@
-import { NFT_ABI } from 'abis/Nft.abi'
+import { NFT_ABI } from '@/abis/Nft.abi'
 import { Address, ProviderRpcClient } from 'everscale-inpage-provider'
-import { userRpcClient } from 'hooks/useRpsClient'
+import { userRpcClient } from '@/hooks/useRpsClient'
 
 class NftAbiSerivce {
   constructor(private readonly rpc: ProviderRpcClient) {}

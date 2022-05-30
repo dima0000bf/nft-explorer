@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { findSupportedInterface, ItemInterface } from 'util/nft-interface'
+import { findSupportedInterface, ItemInterface } from '@/util/nft-interface'
 
 export function useFindSupportedInterface() {
   const [loading, setLoading] = useState(false)

@@ -2,8 +2,8 @@ import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { generatePath } from 'react-router'
 import { Link } from 'react-router-dom'
-import { ACCOUNT_ROUTES } from 'routing/account'
-import { useStores } from 'stores'
+import { ACCOUNT_ROUTES } from '@/routing/account'
+import { useStores } from '@/stores'
 
 export const RootPage = observer(() => {
   const { walletStore } = useStores()
