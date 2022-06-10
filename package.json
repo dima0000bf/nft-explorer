@@ -4,13 +4,17 @@
   "private": true,
   "scripts": {
     "start": "npx webpack serve --config webpack.config.ts",
-    "build": "npx webpack --config webpack.config.ts"
+    "build": "npx webpack --config webpack.config.ts",
+    "api:everscan": "npx ts-node tools/url-api-gen.ts --url https://api.everscan.io/v1/swagger.yaml --to='./src/api/everscan'",
+    "apis": "npm run api:everscan"
   },
   "dependencies": {
     "@types/node": "^16.11.36",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
+    "axios": "^0.27.2",
     "everscale-inpage-provider": "^0.3.11",
+    "lodash": "^4.17.21",
     "mobx": "^6.6.0",
     "mobx-react-lite": "^3.4.0",
     "react": "^18.1.0",
@@ -47,13 +51,19 @@
     "@babel/preset-react": "^7.17.12",
     "@babel/preset-typescript": "^7.17.12",
     "@babel/runtime": "^7.18.3",
+    "@types/js-yaml": "^4.0.5",
+    "@types/lodash": "^4.14.182",
+    "@types/yargs": "^17.0.10",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
+    "js-yaml": "^4.1.0",
+    "openapi-typescript-codegen": "^0.23.0",
     "style-loader": "^3.3.1",
     "ts-node": "^10.8.0",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.9.0"
+    "webpack-dev-server": "^4.9.0",
+    "yargs": "^17.5.1"
   }
 }

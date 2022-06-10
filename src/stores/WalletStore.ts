@@ -16,13 +16,13 @@ export class WalletStore {
     makeObservable(this)
   }
 
-  @action public async checkExtension() {
+  public async checkExtension() {
     this.$hasExtension = await this.rpc.hasProvider()
     await this.rpc.ensureInitialized()
     return this.$hasExtension
   }
 
-  @action public async requestPermissions() {
+  public async requestPermissions() {
     const { accountInteraction } = await this.rpc.requestPermissions({
       permissions: ['basic', 'accountInteraction'],
     })
@@ -31,13 +31,13 @@ export class WalletStore {
     this.$isPermited = !!this.$account
   }
 
-  @action public async cancelPermission() {
+  public async cancelPermission() {
     await this.rpc.disconnect()
     this.$account = null
     this.$isPermited = false
   }
 
-  @action public async checkIsPermitted() {
+  public async checkIsPermitted() {
     try {
       const state = await this.rpc.getProviderState()
       this.$account = state.permissions.accountInteraction || null
