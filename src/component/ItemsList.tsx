@@ -1,31 +1,21 @@
-import { COLLECTION_ABI } from '@/abis/Collection.abi'
-import { everscanApiService } from '@/api/everscan/EverscanApiService'
-import { userRpcClient } from '@/hooks/useRpsClient'
-import { nftAbiService } from '@/services/NftAbiService'
+import { everscanApiService } from '@/services/EverscanApiService'
+import { useAsyncEffect } from '@/hooks/useAsyncEffect'
+import { useAsyncMemo } from '@/hooks/useAsyncMemo'
+import { collectionAbiService } from '@/services/CollectionAbiService'
+import { NFTAbiJson, nftAbiService } from '@/services/NftAbiService'
+import { makeAddress } from '@/util/address'
+import { toHex } from '@/util/number'
 import { countToPagesCount, pageToOffset } from '@/util/paging'
-import { Address, ProviderRpcClient } from 'everscale-inpage-provider'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Pagination } from './Pagination'
 
 const PAGE_SIZE = 10
 
-async function getCodeHash(rpc: ProviderRpcClient, itemAdr: string) {
-  const collCtc = new rpc.Contract(COLLECTION_ABI, new Address(itemAdr))
-
-  // 72054128800...
-  const { codeHash } = await collCtc.methods
-    .nftCodeHash({ answerId: 0 })
-    .call({ responsible: true })
-  return codeHash
-}
-
-async function loadList(hexCodeHash: string, newPage: number) {
-  if (!hexCodeHash) return
-
+async function loadPage(hexCodeHash: string, page: number) {
   const list = await everscanApiService.fetchAccountsList({
     codeHash: hexCodeHash,
     limit: PAGE_SIZE,
-    offset: pageToOffset(newPage, PAGE_SIZE),
+    offset: pageToOffset(page, PAGE_SIZE),
   })
 
   return list
@@ -36,42 +26,33 @@ type ItemsListProps = {
 }
 export const ItemsList = ({ itemAdr }: ItemsListProps) => {
   const [page, setPage] = useState(0)
-  const [hexCodeHash, setHexCodeHash] = useState('')
-  const [jsons, setJsons] = useState<Record<string, any>[]>([])
+  const [jsons, setJsons] = useState<NFTAbiJson[]>([])
   const [isLoading, setLoading] = useState(false)
-  const [itemsCount, setItemsCount] = useState(0)
 
-  const rpc = userRpcClient()
+  const [hexCodeHash = ''] = useAsyncMemo(
+    async () => toHex(await collectionAbiService.getCodeHash(itemAdr)),
+    [itemAdr]
+  )
 
-  useEffect(() => {
-    ;(async () => {
-      const hexCodeHash = BigInt(await getCodeHash(rpc, itemAdr)).toString(16)
-      setHexCodeHash(hexCodeHash)
-    })()
-  }, [itemAdr, rpc])
-
-  useEffect(() => {
+  const [itemsCount = 0] = useAsyncMemo(async () => {
     if (!hexCodeHash) return
-    ;(async () => {
-      const { count } = await everscanApiService.fetchAccountsCount({ codeHash: hexCodeHash })
-      setItemsCount(count)
-    })()
+    const { count } = await everscanApiService.fetchAccountsCount({ codeHash: hexCodeHash })
+    return count
   }, [hexCodeHash])
 
-  useEffect(() => {
+  useAsyncEffect(async () => {
     if (!hexCodeHash) return
-    ;(async () => {
-      setLoading(true)
 
-      const list = (await loadList(hexCodeHash, page)) || []
-      const jsons = await Promise.all(
-        list.map((item) => nftAbiService.getJson(`0:${item.address}`))
-      )
-      setJsons(jsons.map((json) => JSON.parse(json)))
+    setLoading(true)
 
-      setLoading(false)
-    })()
-  }, [loadList, hexCodeHash, page])
+    const list = (await loadPage(hexCodeHash, page)) || []
+    const jsons = await Promise.all(
+      list.map((item) => nftAbiService.getJson(makeAddress(item.address)))
+    )
+    setJsons(jsons)
+
+    setLoading(false)
+  }, [hexCodeHash, page])
 
   return (
     <div>

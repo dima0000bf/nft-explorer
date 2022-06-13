@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { ACCOUNT_ROUTES } from '@/routing/account'
 import { ROOT_ROUTES } from '@/routing/root'
-import { nftAbiService } from '@/services/NftAbiService'
+import { NFTAbiInfo, NFTAbiJson, nftAbiService } from '@/services/NftAbiService'
 import { useStores } from '@/stores'
 import { UnpromiseFunc } from '@/util/promise'
 import { ItemsList } from '@/component/ItemsList'
@@ -14,16 +14,15 @@ import { ItemsList } from '@/component/ItemsList'
 const BASIC_NFT_TYPE = 'Basic NFT'
 
 export const AccountPage = observer(() => {
-  const [itemAdr, setItemAdr] = useState('')
-  const [itemJson, setItemJson] = useState<Record<string, any> | null>(null)
-  const [itemInfo, setItemInfo] = useState<UnpromiseFunc<typeof nftAbiService.getInfo> | null>(
-    null
-  )
-
   const { walletStore } = useStores()
-  const params = useParams<typeof ACCOUNT_ROUTES.accountPage.params>()
   const navigate = useNavigate()
-  const [searchItemIntf, loadingItemIntf, itemIntf, clearItemIntf] =
+  const params = useParams<typeof ACCOUNT_ROUTES.accountPage.params>()
+
+  const [itemAdr, setItemAdr] = useState('')
+  const [itemJson, setItemJson] = useState<NFTAbiJson | null>(null)
+  const [itemInfo, setItemInfo] = useState<NFTAbiInfo | null>(null)
+
+  const [searchItemIntf, isLoadingItemIntf, itemIntf, clearItemIntf] =
     useFindSupportedInterface()
 
   const prettyItemJson = useMemo(() => JSON.stringify(itemJson || '', null, 2), [itemJson])
@@ -50,14 +49,12 @@ export const AccountPage = observer(() => {
     if (intf?.type !== 'nft') return
 
     const json = await nftAbiService.getJson(itemAdr)
-    setItemJson(JSON.parse(json))
+    setItemJson(json)
 
     const info = await nftAbiService.getInfo(itemAdr)
     setItemInfo(info)
     console.log(info)
   }
-
-  const rpc = userRpcClient()
 
   return (
     <div>
@@ -76,9 +73,9 @@ export const AccountPage = observer(() => {
 
         <li>
           Item test result:
-          {!loadingItemIntf && !itemIntf && 'no data'}
-          {loadingItemIntf && 'loading item interface'}
-          {!loadingItemIntf && itemIntf && (
+          {!isLoadingItemIntf && !itemIntf && 'no data'}
+          {isLoadingItemIntf && 'loading item interface'}
+          {!isLoadingItemIntf && itemIntf && (
             <ul>
               <li>TIP Standard: {itemIntf.standart}</li>
               <li>Interface type: {itemIntf.type}</li>
@@ -102,7 +99,7 @@ export const AccountPage = observer(() => {
                 {isItemIsBasicNFT ? (
                   <img
                     style={{ imageRendering: 'pixelated' }}
-                    src={itemPreviewImageURL}
+                    src={itemPreviewImageURL || ''}
                     width="100px"
                     alt=""
                   />

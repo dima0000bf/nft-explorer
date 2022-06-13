@@ -1,8 +1,8 @@
-import axios, { AxiosError } from 'axios'
-import { AccountResponse } from './models/AccountResponse'
-import { AccountsCountRequest } from './models/AccountsCountRequest'
-import { AccountsRequest } from './models/AccountsRequest'
-import { CountResponse } from './models/CountResponse'
+import axios from 'axios'
+import { AccountResponse } from '../api/everscan/models/AccountResponse'
+import { AccountsCountRequest } from '../api/everscan/models/AccountsCountRequest'
+import { AccountsRequest } from '../api/everscan/models/AccountsRequest'
+import { CountResponse } from '../api/everscan/models/CountResponse'
 
 class EverscanApiService {
   /** @throws */

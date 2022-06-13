@@ -1,18 +1,16 @@
 import { observer } from 'mobx-react-lite'
-import { useEffect } from 'react'
 import { generatePath } from 'react-router'
 import { Link } from 'react-router-dom'
 import { ACCOUNT_ROUTES } from '@/routing/account'
 import { useStores } from '@/stores'
+import { useAsyncEffect } from '@/hooks/useAsyncEffect'
 
 export const RootPage = observer(() => {
   const { walletStore } = useStores()
 
-  useEffect(() => {
-    ;(async () => {
-      await walletStore.checkExtension()
-      await walletStore.checkIsPermitted()
-    })()
+  useAsyncEffect(async () => {
+    await walletStore.checkExtension()
+    await walletStore.checkIsPermitted()
   }, [walletStore])
 
   const accountAdr = walletStore.$account?.address

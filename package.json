@@ -6,7 +6,8 @@
     "start": "npx webpack serve --config webpack.config.ts",
     "build": "npx webpack --config webpack.config.ts",
     "api:everscan": "npx ts-node tools/url-api-gen.ts --url https://api.everscan.io/v1/swagger.yaml --to='./src/api/everscan'",
-    "apis": "npm run api:everscan"
+    "apis": "npm run api:everscan",
+    "surge": "npm run build && npx ts-node tools/surge.ts"
   },
   "dependencies": {
     "@types/node": "^16.11.36",
