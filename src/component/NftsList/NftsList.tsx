@@ -7,31 +7,34 @@ import { makeAddress } from '@/util/address'
 import { toHex } from '@/util/number'
 import { countToPagesCount, pageToOffset } from '@/util/paging'
 import { useState } from 'react'
-import { Pagination } from './Pagination'
+import { generatePath, Link } from 'react-router-dom'
+import { ACCOUNT_ROUTES } from '@/routing/account'
+import { Pagination } from '@/component/Pagination'
+import { NftsListItem } from './NftsListItem'
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 30
+
+type NftJsonWithAddress = NFTAbiJson & { address: string }
 
 async function loadPage(hexCodeHash: string, page: number) {
-  const list = await everscanApiService.fetchAccountsList({
+  return everscanApiService.fetchAccountsList({
     codeHash: hexCodeHash,
     limit: PAGE_SIZE,
     offset: pageToOffset(page, PAGE_SIZE),
   })
-
-  return list
 }
 
 type ItemsListProps = {
-  itemAdr: string
+  collectionAdr: string
 }
-export const ItemsList = ({ itemAdr }: ItemsListProps) => {
+export const NftsList = ({ collectionAdr }: ItemsListProps) => {
   const [page, setPage] = useState(0)
-  const [jsons, setJsons] = useState<NFTAbiJson[]>([])
+  const [nftsJsons, setNftsJsons] = useState<NftJsonWithAddress[]>([])
   const [isLoading, setLoading] = useState(false)
 
   const [hexCodeHash = ''] = useAsyncMemo(
-    async () => toHex(await collectionAbiService.getCodeHash(itemAdr)),
-    [itemAdr]
+    async () => toHex(await collectionAbiService.getCodeHash(collectionAdr)),
+    [collectionAdr]
   )
 
   const [itemsCount = 0] = useAsyncMemo(async () => {
@@ -46,10 +49,17 @@ export const ItemsList = ({ itemAdr }: ItemsListProps) => {
     setLoading(true)
 
     const list = (await loadPage(hexCodeHash, page)) || []
+
     const jsons = await Promise.all(
       list.map((item) => nftAbiService.getJson(makeAddress(item.address)))
     )
-    setJsons(jsons)
+
+    const enrichedJsons: NftJsonWithAddress[] = jsons.map((json, index) => ({
+      ...json,
+      address: list[index].address,
+    }))
+
+    setNftsJsons(enrichedJsons)
 
     setLoading(false)
   }, [hexCodeHash, page])
@@ -64,13 +74,11 @@ export const ItemsList = ({ itemAdr }: ItemsListProps) => {
 
       {isLoading
         ? 'loading ...'
-        : jsons.map((json) => (
-            <img
-              key={json.preview.source}
-              style={{ imageRendering: 'pixelated' }}
+        : nftsJsons.map((json) => (
+            <NftsListItem
+              key={json.address}
+              address={json.address}
               src={json.preview.source}
-              width="100px"
-              alt=""
             />
           ))}
     </div>

@@ -32,7 +32,7 @@ export const Pagination = ({ page, maxPages = null, onChange = noop }: Paginatio
       <button disabled={disableLeft} onClick={handleLeft}>
         {'<'}
       </button>
-      <span> {maxPagesSpecified ? `${page} / ${maxPages}` : page} </span>
+      <span> {maxPagesSpecified ? `${page + 1} / ${maxPages}` : page + 1} </span>
       <button disabled={disableRight} onClick={handleRight}>
         {'>'}
       </button>

@@ -18,16 +18,13 @@ const POSSIBLE_INTERFACES: ItemInterface[] = [
   { standart: 4.3, type: 'collection', code: 0x4387bbfb },
 ]
 
-export async function testInterface(
-  address: string,
-  interfaceID: number
-): Promise<[isSupport: boolean | null, err: unknown]> {
+export async function testInterface(address: string, interfaceID: number) {
   try {
     const isSupports = await nftAbiService.supportsInterface(address, interfaceID)
 
-    return [isSupports, null]
+    return [isSupports, null] as const
   } catch (err) {
-    return [null, err]
+    return [undefined, err] as const
   }
 }
 
@@ -47,7 +44,7 @@ export async function findSupportedInterface(address: string) {
   results.reverse()
 
   for (const [intf, [isSupported, err]] of results) {
-    if (isSupported === null) return 'unsupported'
+    if (isSupported === undefined && err) return 'unsupported'
 
     if (err || isSupported === false) continue
 

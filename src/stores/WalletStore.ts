@@ -1,5 +1,5 @@
 import { Address, ProviderRpcClient, WalletContractType } from 'everscale-inpage-provider'
-import { action, makeObservable, observable } from 'mobx'
+import { makeObservable, observable } from 'mobx'
 
 type Account = {
   address: Address
@@ -8,17 +8,20 @@ type Account = {
 }
 
 export class WalletStore {
-  @observable public $hasExtension: boolean | 'unknown' = 'unknown'
-  @observable public $isPermited: boolean | 'unknown' = 'unknown'
+  @observable public $hasExtension: boolean | undefined = undefined
+  @observable public $isRpcInitialized = false
+  @observable public $isPermited: boolean | undefined = undefined
   @observable public $account: Account | null = null
 
   constructor(private readonly rpc: ProviderRpcClient) {
     makeObservable(this)
+    this.rpc.ensureInitialized().then(() => (this.$isRpcInitialized = true))
   }
 
   public async checkExtension() {
     this.$hasExtension = await this.rpc.hasProvider()
     await this.rpc.ensureInitialized()
+    this.$isRpcInitialized = true
     return this.$hasExtension
   }
 

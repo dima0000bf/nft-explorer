@@ -9,6 +9,7 @@ export function useFindSupportedInterface() {
     setLoading(true)
 
     const intf = await findSupportedInterface(address)
+
     if (intf === 'unsupported') setIntf(null)
     else setIntf(intf)
 

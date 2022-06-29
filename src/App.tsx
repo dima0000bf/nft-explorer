@@ -1,32 +1,31 @@
-import { AccountPage } from '@/pages/AccountPage'
+import { AccountPage } from '@/pages/AccountPage/AccountPage'
 import { RootPage } from '@/pages/RootPage'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate, useParams } from 'react-router-dom'
 import { ACCOUNT_ROUTES } from '@/routing/account'
 import { ROOT_ROUTES } from '@/routing/root'
+import { useStores } from './stores'
+import { observer } from 'mobx-react-lite'
+import { useEffect } from 'react'
 
-export function App() {
+export const App = observer(() => {
+  const { walletStore } = useStores()
+  const { accountId } = useParams<typeof ACCOUNT_ROUTES.accountPage.params>()
+  const navigate = useNavigate()
+
   return (
     <div>
-      <div>example collection</div>
-      <div>0:0cd35b77b73df2ce86288cb8530cb6328363543f04da81687e43b3d5628c0bda</div>
-
-      <div>example nft</div>
-      <div>0:b20b38f46a839726f1dbf07deee0ee5d1b9eec86eeacede818157f6af14feef0</div>
-
-      <BrowserRouter>
-        <Routes>
-          <Route path={ROOT_ROUTES.rootPage.route} element={<RootPage />} />
-          <Route
-            path={ACCOUNT_ROUTES.accountPage.route}
-            element={
-              <>
-                <RootPage />
-                <AccountPage />
-              </>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path={ROOT_ROUTES.rootPage.route} element={<RootPage />} />
+        <Route
+          path={ACCOUNT_ROUTES.accountPage.route}
+          element={
+            <>
+              <RootPage />
+              {walletStore.$isRpcInitialized && <AccountPage />}
+            </>
+          }
+        />
+      </Routes>
     </div>
   )
-}
+})
